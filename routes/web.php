@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('verify');
 });
+
+
+
+// Route::get('/verify-student', [AuthController::class, 'verification'])->name('verify.student');
+Route::get('/verify-student', [AuthController::class,'verify'])->name('verify.student');
+Route::post('/verify', [AuthController::class, 'verification'])->name('verification');
+
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('postregister');
+
