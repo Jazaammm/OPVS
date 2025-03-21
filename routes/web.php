@@ -15,7 +15,7 @@ use App\Http\Controllers\AuthController;
 */
 
 Route::get('/', function () {
-    return view('verify');
+    return view('auth.login');
 });
 
 
@@ -24,6 +24,23 @@ Route::get('/', function () {
 Route::get('/verify-student', [AuthController::class,'verify'])->name('verify.student');
 Route::post('/verify', [AuthController::class, 'verification'])->name('verification');
 
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('postregister');
 
+
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->name('admin.dashboard')->middleware('auth');
+
+Route::get('/professor/dashboard', function () {
+    return view('professor.dashboard');
+})->name('professor.dashboard')->middleware('auth');
+
+Route::get('/student/dashboard', function () {
+    return view('dashboard.student');
+})->name('student.dashboard')->middleware('auth');

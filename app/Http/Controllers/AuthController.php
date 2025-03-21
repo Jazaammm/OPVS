@@ -16,7 +16,7 @@ class AuthController extends Controller
 {
     public function showRegistrationForm()
     {
-        return view('auth.register');
+        return view('auth.login');
     }
 
     public function register(Request $request)
@@ -43,7 +43,7 @@ class AuthController extends Controller
         //     default => redirect()->route('student.dashboard'),
         // };
 
-        return redirect()->route('register')->with('success', 'Registration successful! Please login.');
+        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
     }
 
 
@@ -152,6 +152,33 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch data from Google Sheets: ' . $e->getMessage()]);
         }
+    }
+
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif (Auth::user()->role === 'professor') {
+                return redirect()->route('professor.dashboard');
+            } else {
+                return redirect()->route('student.dashboard');
+            }
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials'])->onlyInput('email');
     }
 
 
